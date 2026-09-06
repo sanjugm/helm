@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-webapp-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: nginx-webapp
+    environment: prod
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/sanjugm/helm.git
+    targetRevision: main
+    path: helm-chart/nginx-webapp
+    helm:
+      valueFiles:
+        - ../../k8s/environments/prod/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    # Production uses MANUAL sync - no automated deployment
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m

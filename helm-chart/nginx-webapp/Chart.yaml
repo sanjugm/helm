@@ -1,0 +1,12 @@
+apiVersion: v2
+name: nginx-webapp
+description: A Helm chart for deploying an Nginx web application
+type: application
+version: 1.0.0
+appVersion: "1.27.0"
+maintainers:
+  - name: Sanju
+keywords:
+  - nginx
+  - web
+  - argocd
